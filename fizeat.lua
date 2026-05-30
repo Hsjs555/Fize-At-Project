@@ -1,5 +1,5 @@
 -- =======================================================
--- اسم السكربت: FIZE AT (نسخة مقاومة للتحديثات v2.0)
+-- اسم السكربت المحدث: FIZE AT Pro v3.0
 -- =======================================================
 
 local ScreenGui = Instance.new("ScreenGui")
@@ -17,16 +17,18 @@ local AttackButton = Instance.new("TextButton")
 ScreenGui.Parent = game:GetService("CoreGui")
 ScreenGui.ResetOnSpawn = false
 
+-- اللوحة الرئيسية بتصميم نيون فخم
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(18, 12, 38)
+MainFrame.BackgroundColor3 = Color3.fromRGB(13, 10, 28)
 MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
 MainFrame.Size = UDim2.new(0, 260, 0, 270)
 MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.BorderSizePixel = 0
 
+-- شريط العنوان المتناسق
 TitleBar.Parent = MainFrame
-TitleBar.BackgroundColor3 = Color3.fromRGB(28, 20, 58)
+TitleBar.BackgroundColor3 = Color3.fromRGB(24, 18, 51)
 TitleBar.Size = UDim2.new(1, 0, 0, 40)
 TitleBar.BorderSizePixel = 0
 
@@ -34,20 +36,21 @@ Title.Parent = TitleBar
 Title.BackgroundTransparency = 1
 Title.Position = UDim2.new(0.05, 0, 0, 0)
 Title.Size = UDim2.new(0.6, 0, 1, 0)
-Title.Text = "FIZE AT v2.0 ⚡"
+Title.Text = "⚡ FIZE AT PREMIUM"
 Title.TextColor3 = Color3.fromRGB(0, 195, 255)
-Title.TextSize = 18
-Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 16
+Title.Font = Enum.Font.GothamBold
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
+-- أزرار التحكم بالشريط العلوي
 CloseButton.Parent = TitleBar
 CloseButton.BackgroundTransparency = 1
 CloseButton.Position = UDim2.new(0.85, 0, 0, 0)
 CloseButton.Size = UDim2.new(0, 35, 1, 0)
 CloseButton.Text = "X"
 CloseButton.TextColor3 = Color3.fromRGB(255, 75, 75)
-CloseButton.TextSize = 18
-CloseButton.Font = Enum.Font.SourceSansBold
+CloseButton.TextSize = 16
+CloseButton.Font = Enum.Font.GothamBold
 
 MinimizeButton.Parent = TitleBar
 MinimizeButton.BackgroundTransparency = 1
@@ -55,42 +58,46 @@ MinimizeButton.Position = UDim2.new(0.70, 0, 0, 0)
 MinimizeButton.Size = UDim2.new(0, 35, 1, 0)
 MinimizeButton.Text = "_"
 MinimizeButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-MinimizeButton.TextSize = 18
-MinimizeButton.Font = Enum.Font.SourceSansBold
+MinimizeButton.TextSize = 16
+MinimizeButton.Font = Enum.Font.GothamBold
 
+-- زر الفتح الصغير (مربع قابل للتحريك في أي مكان على الشاشة)
 OpenButton.Parent = ScreenGui
-OpenButton.BackgroundColor3 = Color3.fromRGB(28, 20, 58)
-OpenButton.Position = UDim2.new(0.5, -20, 0.5, -20)
-OpenButton.Size = UDim2.new(0, 40, 0, 40)
+OpenButton.BackgroundColor3 = Color3.fromRGB(24, 18, 51)
+OpenButton.Position = UDim2.new(0.1, 0, 0.4, 0) -- موقعه الافتراضي على الجنب
+OpenButton.Size = UDim2.new(0, 45, 0, 45)
 OpenButton.Text = "X"
 OpenButton.TextColor3 = Color3.fromRGB(0, 195, 255)
-OpenButton.TextSize = 22
-OpenButton.Font = Enum.Font.SourceSansBold
+OpenButton.TextSize = 20
+OpenButton.Font = Enum.Font.GothamBold
 OpenButton.Visible = false
 OpenButton.BorderSizePixel = 0
+OpenButton.Active = true
+OpenButton.Draggable = true -- تم تفعيل خاصية السحب في أي مكان للزر الصغير!
 
 local function styleButton(btn, text, pos)
     btn.Parent = MainFrame
     btn.Size = UDim2.new(0, 220, 0, 45)
     btn.Position = pos
-    btn.BackgroundColor3 = Color3.fromRGB(32, 24, 66)
-    btn.Text = text .. " [❌]"
+    btn.BackgroundColor3 = Color3.fromRGB(22, 16, 43)
+    btn.Text = text .. " : قيد الإيقاف"
     btn.TextColor3 = Color3.fromRGB(255, 100, 100)
-    btn.TextSize = 15
-    btn.Font = Enum.Font.SourceSans
+    btn.TextSize = 14
+    btn.Font = Enum.Font.Gotham
     btn.BorderSizePixel = 0
 end
 
-styleButton(ESPButton, "كشف اللاعبين (ESP)", UDim2.new(0.08, 0, 0.22, 0))
-styleButton(EvadeButton, "تفادي الضربات (Evade)", UDim2.new(0.08, 0, 0.46, 0))
-styleButton(AttackButton, "قتال تلقائي (Auto-Combo)", UDim2.new(0.08, 0, 0.70, 0))
+styleButton(ESPButton, "كشف مشع (Blue ESP)", UDim2.new(0.08, 0, 0.22, 0))
+styleButton(EvadeButton, "تفادي ذكي (Smart Evade)", UDim2.new(0.08, 0, 0.46, 0))
+styleButton(AttackButton, "هجوم آلي (Fast Combo)", UDim2.new(0.08, 0, 0.70, 0))
 
+-- تحريك النوافذ وقفلها
 CloseButton.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 MinimizeButton.MouseButton1Click:Connect(function() MainFrame.Visible = false OpenButton.Visible = true end)
 OpenButton.MouseButton1Click:Connect(function() OpenButton.Visible = false MainFrame.Visible = true end)
 
 -- =======================================================
--- أنظمة تخطي التحديث والـ Anti-Cheat الجديد
+-- الأكواد الخلفية المعدلة والمحسنة
 -- =======================================================
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -101,42 +108,40 @@ local ESP_Enabled = false
 local Evade_Enabled = false
 local Attack_Enabled = false
 
--- [1] ميزة الـ ESP (تعتمد على نظام الصناديق لتخطي الحظر)
+-- [1] ميزة الـ ESP المشع الأزرق المريح
 ESPButton.MouseButton1Click:Connect(function()
     ESP_Enabled = not ESP_Enabled
-    ESPButton.Text = ESP_Enabled and "كشف اللاعبين (ESP) [✅]" or "كشف اللاعبين (ESP) [❌]"
-    ESPButton.BackgroundColor3 = ESP_Enabled and Color3.fromRGB(40, 110, 70) or Color3.fromRGB(32, 24, 66)
+    ESPButton.Text = ESP_Enabled and "كشف مشع (Blue ESP) : يعمل" or "كشف مشع (Blue ESP) : قيد الإيقاف"
+    ESPButton.BackgroundColor3 = ESP_Enabled and Color3.fromRGB(30, 80, 50) or Color3.fromRGB(22, 16, 43)
     ESPButton.TextColor3 = ESP_Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 100, 100)
 end)
 
 RunService.Heartbeat:Connect(function()
     for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            local box = player.Character:FindFirstChild("FIZE_ESP")
+        if player ~= LocalPlayer and player.Character then
+            local highlight = player.Character:FindFirstChild("FIZE_Highlight")
             if ESP_Enabled then
-                if not box then
-                    local bg = Instance.new("BoxHandleAdornment")
-                    bg.Name = "FIZE_ESP"
-                    bg.Size = Vector3.new(4, 6, 4)
-                    bg.Color3 = Color3.fromRGB(0, 195, 255)
-                    bg.AlwaysOnTop = true
-                    bg.ZIndex = 10
-                    bg.Transparency = 0.6
-                    bg.Adornee = player.Character.HumanoidRootPart
-                    bg.Parent = player.Character
+                if not highlight then
+                    highlight = Instance.new("Highlight")
+                    highlight.Name = "FIZE_Highlight"
+                    highlight.FillColor = Color3.fromRGB(0, 120, 255) -- أزرق مريح
+                    highlight.OutlineColor = Color3.fromRGB(0, 255, 255) -- حواف نيون مشعة
+                    highlight.FillTransparency = 0.6
+                    highlight.OutlineTransparency = 0
+                    highlight.Parent = player.Character
                 end
             else
-                if player.Character:FindFirstChild("FIZE_ESP") then player.Character.FIZE_ESP:Destroy() end
+                if highlight then highlight:Destroy() end
             end
         end
     end
 end)
 
--- [2] ميزة تفادي الضربات (محدثة: تعتمد على المسافة والسرعة المفاجئة لتجنب التحديثات)
+-- [2] ميزة التفادي الذكي (يهرب فقط أثناء هجوم الخصم)
 EvadeButton.MouseButton1Click:Connect(function()
     Evade_Enabled = not Evade_Enabled
-    EvadeButton.Text = Evade_Enabled and "تفادي الضربات (Evade) [✅]" or "تفادي الضربات (Evade) [❌]"
-    EvadeButton.BackgroundColor3 = Evade_Enabled and Color3.fromRGB(40, 110, 70) or Color3.fromRGB(32, 24, 66)
+    EvadeButton.Text = Evade_Enabled and "تفادي ذكي (Smart Evade) : يعمل" or "تفادي ذكي (Smart Evade) : قيد الإيقاف"
+    EvadeButton.BackgroundColor3 = Evade_Enabled and Color3.fromRGB(30, 80, 50) or Color3.fromRGB(22, 16, 43)
     EvadeButton.TextColor3 = Evade_Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 100, 100)
 end)
 
@@ -146,17 +151,25 @@ RunService.Heartbeat:Connect(function()
     if not char or not char:FindFirstChild("HumanoidRootPart") then return end
     
     for _, enemy in ipairs(Players:GetPlayers()) do
-        if enemy ~= LocalPlayer and enemy.Character and enemy.Character:FindFirstChild("HumanoidRootPart") then
+        if enemy ~= LocalPlayer and enemy.Character and enemy.Character:FindFirstChild("Humanoid") and enemy.Character:FindFirstChild("HumanoidRootPart") then
             local distance = (char.HumanoidRootPart.Position - enemy.Character.HumanoidRootPart.Position).Magnitude
             
-            -- إذا اقترب العدو بسرعة كبيرة وبمسافة قتالية خطيرة
-            if distance < 12 then
-                local enemyVel = enemy.Character.HumanoidRootPart.Velocity.Magnitude
-                -- إذا كان الخصم يتحرك بسرعة هجومية (يعني يضرب أو يندفع نحوك)
-                if enemyVel > 15 or enemy.Character.Humanoid.MoveDirection.Magnitude > 0 then
-                    -- تفادي ذكي وجانبي لعدم لفت انتباه السيرفر
-                    char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame * CFrame.new(math.random(-10, 10), 0, 8)
-                    task.wait(0.4) -- حماية ضد التكرار السريع (Anti-Kick)
+            -- فحص المسافة القتالية القريبة
+            if distance < 10 then
+                local isAttacking = false
+                -- فحص هل الخصم يقوم بحركة ضرب فعلية لتفاديها
+                for _, track in ipairs(enemy.Character.Humanoid:GetPlayingAnimationTracks()) do
+                    local name = track.Animation.Name:lower()
+                    if name:find("attack") or name:find("punch") or name:find("m1") or name:find("swing") then
+                        isAttacking = true
+                        break
+                    end
+                end
+                
+                -- التهرب الجانبي الذكي فقط في حالة وجود هجوم لتتمكن من ضربه
+                if isAttacking then
+                    char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame * CFrame.new(math.random(-6, 6), 0, 3)
+                    task.wait(0.5) -- وقت مستقطع لضمان عدم حدوث شلل في الحركة
                     break
                 end
             end
@@ -164,28 +177,29 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- [3] ميزة القتال التلقائي (محدثة ومقاومة للحظر)
+-- [3] ميزة القتال التلقائي السريع جداً المخترق للحماية
 AttackButton.MouseButton1Click:Connect(function()
     Attack_Enabled = not Attack_Enabled
-    AttackButton.Text = Attack_Enabled and "قتال تلقائي (Auto-Combo) [✅]" or "قتال تلقائي (Auto-Combo) [❌]"
-    AttackButton.BackgroundColor3 = Attack_Enabled and Color3.fromRGB(40, 110, 70) or Color3.fromRGB(32, 24, 66)
+    AttackButton.Text = Attack_Enabled and "هجوم آلي (Fast Combo) : يعمل" or "هجوم آلي (Fast Combo) : قيد الإيقاف"
+    AttackButton.BackgroundColor3 = Attack_Enabled and Color3.fromRGB(30, 80, 50) or Color3.fromRGB(22, 16, 43)
     AttackButton.TextColor3 = Attack_Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 100, 100)
 end)
 
 task.spawn(function()
     while true do
-        task.wait(0.15) -- سرعة آمنة وممتازة للـ Combo
+        task.wait(0.05) -- تسريع وتيرة ضغط الأزرار لمحاكاة سريعة
         if Attack_Enabled then
             local char = LocalPlayer.Character
             if char and char:FindFirstChild("HumanoidRootPart") then
                 for _, enemy in ipairs(Players:GetPlayers()) do
                     if enemy ~= LocalPlayer and enemy.Character and enemy.Character:FindFirstChild("HumanoidRootPart") then
                         local distance = (char.HumanoidRootPart.Position - enemy.Character.HumanoidRootPart.Position).Magnitude
+                        
+                        -- نطاق الاشتباك القريب
                         if distance < 11 and enemy.Character.Humanoid.Health > 0 then
-                            -- استخدام نظام النقر الآمن الافتراضي لتخطي حماية التحديث
-                            VirtualUser:Button1Down(Vector2.new(0,0))
-                            task.wait(0.05)
-                            VirtualUser:Button1Up(Vector2.new(0,0))
+                            -- إرسال ضغطات مستمرة ومكثفة لتشغيل الكومبو رغماً عن التحديث
+                            VirtualUser:CaptureController()
+                            VirtualUser:ClickButton1(Vector2.new(0,0))
                         end
                     end
                 end
