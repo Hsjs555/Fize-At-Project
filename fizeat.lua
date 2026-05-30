@@ -1,5 +1,5 @@
 -- =======================================================
--- اسم السكربت المحدث: FIZE AT Pro v3.0
+-- اسم السكربت المحدث: FIZE AT Pro v4.0 (Steal a Brainrot)
 -- =======================================================
 
 local ScreenGui = Instance.new("ScreenGui")
@@ -10,14 +10,14 @@ local CloseButton = Instance.new("TextButton")
 local MinimizeButton = Instance.new("TextButton")
 local OpenButton = Instance.new("TextButton")
 
-local ESPButton = Instance.new("TextButton")
-local EvadeButton = Instance.new("TextButton")
-local AttackButton = Instance.new("TextButton")
+local FlyButton = Instance.new("TextButton")
+local NoclipButton = Instance.new("TextButton")
+local AutoTeleportButton = Instance.new("TextButton")
 
 ScreenGui.Parent = game:GetService("CoreGui")
 ScreenGui.ResetOnSpawn = false
 
--- اللوحة الرئيسية بتصميم نيون فخم
+-- تصميم اللوحة الرئيسية النيون (أزرق/بنفسجي داكن)
 MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = Color3.fromRGB(13, 10, 28)
 MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
@@ -26,7 +26,7 @@ MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.BorderSizePixel = 0
 
--- شريط العنوان المتناسق
+-- شريط العنوان
 TitleBar.Parent = MainFrame
 TitleBar.BackgroundColor3 = Color3.fromRGB(24, 18, 51)
 TitleBar.Size = UDim2.new(1, 0, 0, 40)
@@ -36,13 +36,13 @@ Title.Parent = TitleBar
 Title.BackgroundTransparency = 1
 Title.Position = UDim2.new(0.05, 0, 0, 0)
 Title.Size = UDim2.new(0.6, 0, 1, 0)
-Title.Text = "⚡ FIZE AT PREMIUM"
+Title.Text = "⚡ FIZE AT v4.0"
 Title.TextColor3 = Color3.fromRGB(0, 195, 255)
 Title.TextSize = 16
 Title.Font = Enum.Font.GothamBold
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
--- أزرار التحكم بالشريط العلوي
+-- أزرار الإغلاق والتصغير
 CloseButton.Parent = TitleBar
 CloseButton.BackgroundTransparency = 1
 CloseButton.Position = UDim2.new(0.85, 0, 0, 0)
@@ -61,10 +61,10 @@ MinimizeButton.TextColor3 = Color3.fromRGB(200, 200, 200)
 MinimizeButton.TextSize = 16
 MinimizeButton.Font = Enum.Font.GothamBold
 
--- زر الفتح الصغير (مربع قابل للتحريك في أي مكان على الشاشة)
+-- زر الاختصار X الصغير (قابل للتحريك في أي مكان على الشاشة)
 OpenButton.Parent = ScreenGui
 OpenButton.BackgroundColor3 = Color3.fromRGB(24, 18, 51)
-OpenButton.Position = UDim2.new(0.1, 0, 0.4, 0) -- موقعه الافتراضي على الجنب
+OpenButton.Position = UDim2.new(0.1, 0, 0.4, 0)
 OpenButton.Size = UDim2.new(0, 45, 0, 45)
 OpenButton.Text = "X"
 OpenButton.TextColor3 = Color3.fromRGB(0, 195, 255)
@@ -73,136 +73,122 @@ OpenButton.Font = Enum.Font.GothamBold
 OpenButton.Visible = false
 OpenButton.BorderSizePixel = 0
 OpenButton.Active = true
-OpenButton.Draggable = true -- تم تفعيل خاصية السحب في أي مكان للزر الصغير!
+OpenButton.Draggable = true -- سحب حر بالكامل في أي مكان!
 
 local function styleButton(btn, text, pos)
     btn.Parent = MainFrame
     btn.Size = UDim2.new(0, 220, 0, 45)
     btn.Position = pos
     btn.BackgroundColor3 = Color3.fromRGB(22, 16, 43)
-    btn.Text = text .. " : قيد الإيقاف"
+    btn.Text = text .. " [❌]"
     btn.TextColor3 = Color3.fromRGB(255, 100, 100)
-    btn.TextSize = 14
+    btn.TextSize = 13
     btn.Font = Enum.Font.Gotham
     btn.BorderSizePixel = 0
 end
 
-styleButton(ESPButton, "كشف مشع (Blue ESP)", UDim2.new(0.08, 0, 0.22, 0))
-styleButton(EvadeButton, "تفادي ذكي (Smart Evade)", UDim2.new(0.08, 0, 0.46, 0))
-styleButton(AttackButton, "هجوم آلي (Fast Combo)", UDim2.new(0.08, 0, 0.70, 0))
+styleButton(FlyButton, "خيار الطيران (Fly)", UDim2.new(0.08, 0, 0.22, 0))
+styleButton(NoclipButton, "اختراق الجدران (Noclip)", UDim2.new(0.08, 0, 0.46, 0))
+styleButton(AutoTeleportButton, "رسبون تلقائي بالخزائن", UDim2.new(0.08, 0, 0.70, 0))
 
--- تحريك النوافذ وقفلها
+-- تحكم النوافذ
 CloseButton.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 MinimizeButton.MouseButton1Click:Connect(function() MainFrame.Visible = false OpenButton.Visible = true end)
 OpenButton.MouseButton1Click:Connect(function() OpenButton.Visible = false MainFrame.Visible = true end)
 
 -- =======================================================
--- الأكواد الخلفية المعدلة والمحسنة
+-- البرمجة الخاصة بالميزات (الطيران، الاختراق، والانتقال)
 -- =======================================================
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
-local VirtualUser = game:GetService("VirtualUser")
 
-local ESP_Enabled = false
-local Evade_Enabled = false
-local Attack_Enabled = false
+local Flying = false
+local Noclip = false
+local AutoTP = false
+local Speed = 50
 
--- [1] ميزة الـ ESP المشع الأزرق المريح
-ESPButton.MouseButton1Click:Connect(function()
-    ESP_Enabled = not ESP_Enabled
-    ESPButton.Text = ESP_Enabled and "كشف مشع (Blue ESP) : يعمل" or "كشف مشع (Blue ESP) : قيد الإيقاف"
-    ESPButton.BackgroundColor3 = ESP_Enabled and Color3.fromRGB(30, 80, 50) or Color3.fromRGB(22, 16, 43)
-    ESPButton.TextColor3 = ESP_Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 100, 100)
-end)
-
-RunService.Heartbeat:Connect(function()
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character then
-            local highlight = player.Character:FindFirstChild("FIZE_Highlight")
-            if ESP_Enabled then
-                if not highlight then
-                    highlight = Instance.new("Highlight")
-                    highlight.Name = "FIZE_Highlight"
-                    highlight.FillColor = Color3.fromRGB(0, 120, 255) -- أزرق مريح
-                    highlight.OutlineColor = Color3.fromRGB(0, 255, 255) -- حواف نيون مشعة
-                    highlight.FillTransparency = 0.6
-                    highlight.OutlineTransparency = 0
-                    highlight.Parent = player.Character
-                end
-            else
-                if highlight then highlight:Destroy() end
-            end
-        end
-    end
-end)
-
--- [2] ميزة التفادي الذكي (يهرب فقط أثناء هجوم الخصم)
-EvadeButton.MouseButton1Click:Connect(function()
-    Evade_Enabled = not Evade_Enabled
-    EvadeButton.Text = Evade_Enabled and "تفادي ذكي (Smart Evade) : يعمل" or "تفادي ذكي (Smart Evade) : قيد الإيقاف"
-    EvadeButton.BackgroundColor3 = Evade_Enabled and Color3.fromRGB(30, 80, 50) or Color3.fromRGB(22, 16, 43)
-    EvadeButton.TextColor3 = Evade_Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 100, 100)
-end)
-
-RunService.Heartbeat:Connect(function()
-    if not Evade_Enabled then return end
+-- [1] كود الطيران الاحترافي للهواتف
+FlyButton.MouseButton1Click:Connect(function()
+    Flying = not Flying
+    FlyButton.Text = Flying and "خيار الطيران (Fly) [✅]" or "خيار الطيران (Fly) [❌]"
+    FlyButton.BackgroundColor3 = Flying and Color3.fromRGB(30, 80, 50) or Color3.fromRGB(22, 16, 43)
+    FlyButton.TextColor3 = Flying and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 100, 100)
+    
     local char = LocalPlayer.Character
     if not char or not char:FindFirstChild("HumanoidRootPart") then return end
     
-    for _, enemy in ipairs(Players:GetPlayers()) do
-        if enemy ~= LocalPlayer and enemy.Character and enemy.Character:FindFirstChild("Humanoid") and enemy.Character:FindFirstChild("HumanoidRootPart") then
-            local distance = (char.HumanoidRootPart.Position - enemy.Character.HumanoidRootPart.Position).Magnitude
-            
-            -- فحص المسافة القتالية القريبة
-            if distance < 10 then
-                local isAttacking = false
-                -- فحص هل الخصم يقوم بحركة ضرب فعلية لتفاديها
-                for _, track in ipairs(enemy.Character.Humanoid:GetPlayingAnimationTracks()) do
-                    local name = track.Animation.Name:lower()
-                    if name:find("attack") or name:find("punch") or name:find("m1") or name:find("swing") then
-                        isAttacking = true
-                        break
-                    end
+    if Flying then
+        local bv = Instance.new("BodyVelocity")
+        bv.Name = "FIZE_Fly"
+        bv.Velocity = Vector3.new(0,0,0)
+        bv.MaxForce = Vector3.new(1,1,1) * 9e9
+        bv.Parent = char.HumanoidRootPart
+        
+        task.spawn(function()
+            local hum = char:WaitForChild("Humanoid")
+            while Flying do
+                RunService.RenderStepped:Wait()
+                bv.Velocity = hum.MoveDirection * Speed
+                if hum.Jump then
+                    bv.Velocity = bv.Velocity + Vector3.new(0, Speed, 0)
                 end
-                
-                -- التهرب الجانبي الذكي فقط في حالة وجود هجوم لتتمكن من ضربه
-                if isAttacking then
-                    char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame * CFrame.new(math.random(-6, 6), 0, 3)
-                    task.wait(0.5) -- وقت مستقطع لضمان عدم حدوث شلل في الحركة
-                    break
+            end
+            bv:Destroy()
+        end)
+    end
+end)
+
+-- [2] كود اختراق الجدران (Noclip)
+NoclipButton.MouseButton1Click:Connect(function()
+    Noclip = not Noclip
+    NoclipButton.Text = Noclip and "اختراق الجدران (Noclip) [✅]" or "اختراق الجدران (Noclip) [❌]"
+    NoclipButton.BackgroundColor3 = Noclip and Color3.fromRGB(30, 80, 50) or Color3.fromRGB(22, 16, 43)
+    NoclipButton.TextColor3 = Noclip and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 100, 100)
+end)
+
+RunService.Stepped:Connect(function()
+    if Noclip then
+        local char = LocalPlayer.Character
+        if char then
+            for _, part in ipairs(char:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
                 end
             end
         end
     end
 end)
 
--- [3] ميزة القتال التلقائي السريع جداً المخترق للحماية
-AttackButton.MouseButton1Click:Connect(function()
-    Attack_Enabled = not Attack_Enabled
-    AttackButton.Text = Attack_Enabled and "هجوم آلي (Fast Combo) : يعمل" or "هجوم آلي (Fast Combo) : قيد الإيقاف"
-    AttackButton.BackgroundColor3 = Attack_Enabled and Color3.fromRGB(30, 80, 50) or Color3.fromRGB(22, 16, 43)
-    AttackButton.TextColor3 = Attack_Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 100, 100)
+-- [3] كود الرسبون/الانتقال التلقائي داخل غرف السرقة عند فتحها
+AutoTeleportButton.MouseButton1Click:Connect(function()
+    AutoTP = not AutoTP
+    AutoTeleportButton.Text = AutoTP and "رسبون تلقائي بالخزائن [✅]" or "رسبون تلقائي بالخزائن [❌]"
+    AutoTeleportButton.BackgroundColor3 = AutoTP and Color3.fromRGB(30, 80, 50) or Color3.fromRGB(22, 16, 43)
+    AutoTeleportButton.TextColor3 = AutoTP and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 100, 100)
 end)
 
-task.spawn(function()
-    while true do
-        task.wait(0.05) -- تسريع وتيرة ضغط الأزرار لمحاكاة سريعة
-        if Attack_Enabled then
-            local char = LocalPlayer.Character
-            if char and char:FindFirstChild("HumanoidRootPart") then
-                for _, enemy in ipairs(Players:GetPlayers()) do
-                    if enemy ~= LocalPlayer and enemy.Character and enemy.Character:FindFirstChild("HumanoidRootPart") then
-                        local distance = (char.HumanoidRootPart.Position - enemy.Character.HumanoidRootPart.Position).Magnitude
-                        
-                        -- نطاق الاشتباك القريب
-                        if distance < 11 and enemy.Character.Humanoid.Health > 0 then
-                            -- إرسال ضغطات مستمرة ومكثفة لتشغيل الكومبو رغماً عن التحديث
-                            VirtualUser:CaptureController()
-                            VirtualUser:ClickButton1(Vector2.new(0,0))
-                        end
-                    end
-                end
+-- فحص الماب والانتقال التلقائي للغرف المفتوحة
+RunService.Heartbeat:Connect(function()
+    if not AutoTP then return end
+    local char = LocalPlayer.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    
+    -- البحث في مجلد الماب عن بيوت أو خزائن اللاعبين
+    local tycoonFolder = workspace:FindFirstChild("Tycoons") or workspace:FindFirstChild("Plots") or workspace
+    
+    for _, tycoon in ipairs(tycoonFolder:GetChildren()) do
+        -- التحقق من وجود باب أو خزنة مفتوحة (Open) بناءً على تصميم مابات السرقة
+        local gate = tycoon:FindFirstChild("Gate") or tycoon:FindFirstChild("Door") or tycoon:FindFirstChild("Vault")
+        local mainArea = tycoon:FindFirstChild("Main") or tycoon:FindFirstChild("Interior") or tycoon:FindFirstChild("ItemSpawn")
+        
+        if gate and mainArea then
+            -- إذا كان الباب مفتوحاً أو شفافاً (تم فتح البيوت للسرقة)
+            if gate.CanCollide == false or gate.Transparency > 0.5 then
+                -- رسبون فوري داخل الغرفة فوق مكان الأغراض المشعة مباشرة
+                char.HumanoidRootPart.CFrame = mainArea.CFrame + Vector3.new(0, 3, 0)
+                task.wait(1.5) -- انتظار بسيط لتجميع الأغراض قبل الانتقال للغرفة التالية لحمايتك من الـ Kick
+                break
             end
         end
     end
