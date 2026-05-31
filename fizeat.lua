@@ -1,5 +1,5 @@
 -- =======================================================
--- اسم السكربت المحدث: FIZE AT - Rich & Teleport Edition
+-- اسم السكربت المحدث: FIZE AT - Ghost Mode Edition v7.0
 -- =======================================================
 
 local ScreenGui = Instance.new("ScreenGui")
@@ -10,30 +10,23 @@ local CloseButton = Instance.new("TextButton")
 local MinimizeButton = Instance.new("TextButton")
 local OpenButton = Instance.new("TextButton")
 
--- أزرار الصفحة الرئيسية
-local GoToSpawnPageButton = Instance.new("TextButton")
-local RichServerButton = Instance.new("TextButton")
-
--- عناصر الصفحة الثانية (صفحة الرسبون وحفظ المكان)
-local SpawnPageFrame = Instance.new("Frame")
-local SaveLocationButton = Instance.new("TextButton")
-local TeleportSavedButton = Instance.new("TextButton")
-local BackToMainButton = Instance.new("TextButton")
+-- أزرار النسخة الجديدة
+local InvisibleButton = Instance.new("TextButton")
 
 ScreenGui.Parent = game:GetService("CoreGui")
 ScreenGui.ResetOnSpawn = false
 
--- اللوحة الرئيسية بتصميم نيون فخم وقابل للتحريك
+-- إعدادات اللوحة الرئيسية النيون الشفافة
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(15, 10, 30)
+MainFrame.BackgroundColor3 = Color3.fromRGB(13, 10, 28)
 MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
-MainFrame.Size = UDim2.new(0, 250, 0, 200)
+MainFrame.Size = UDim2.new(0, 250, 0, 140)
 MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.BorderSizePixel = 0
 
 TitleBar.Parent = MainFrame
-TitleBar.BackgroundColor3 = Color3.fromRGB(25, 15, 45)
+TitleBar.BackgroundColor3 = Color3.fromRGB(24, 18, 51)
 TitleBar.Size = UDim2.new(1, 0, 0, 40)
 TitleBar.BorderSizePixel = 0
 
@@ -41,9 +34,9 @@ Title.Parent = TitleBar
 Title.BackgroundTransparency = 1
 Title.Position = UDim2.new(0.05, 0, 0, 0)
 Title.Size = UDim2.new(0.6, 0, 1, 0)
-Title.Text = "⚡ FIZE AT v6.0"
-Title.TextColor3 = Color3.fromRGB(0, 200, 255)
-Title.TextSize = 16
+Title.Text = "👻 FIZE AT GHOST v7.0"
+Title.TextColor3 = Color3.fromRGB(0, 195, 255)
+Title.TextSize = 15
 Title.Font = Enum.Font.GothamBold
 
 CloseButton.Parent = TitleBar
@@ -64,130 +57,74 @@ MinimizeButton.Font = Enum.Font.GothamBold
 
 -- زر الاختصار الخارجي الصغير (حركة حرة بالكامل في الشاشة)
 OpenButton.Parent = ScreenGui
-OpenButton.BackgroundColor3 = Color3.fromRGB(25, 15, 45)
+OpenButton.BackgroundColor3 = Color3.fromRGB(24, 18, 51)
 OpenButton.Position = UDim2.new(0.1, 0, 0.4, 0)
 OpenButton.Size = UDim2.new(0, 45, 0, 45)
 OpenButton.Text = "FIZE"
-OpenButton.TextColor3 = Color3.fromRGB(0, 200, 255)
-OpenButton.TextSize = 14
+OpenButton.TextColor3 = Color3.fromRGB(0, 195, 255)
+OpenButton.TextSize = 13
 OpenButton.Font = Enum.Font.GothamBold
 OpenButton.Visible = false
 OpenButton.Active = true
 OpenButton.Draggable = true
 
-local function styleButton(btn, text, pos, parent, color)
-    btn.Parent = parent
-    btn.Size = UDim2.new(0, 210, 0, 45)
-    btn.Position = pos
-    btn.BackgroundColor3 = color or Color3.fromRGB(28, 20, 55)
-    btn.Text = text
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.TextSize = 13
-    btn.Font = Enum.Font.GothamBold
-    btn.BorderSizePixel = 0
-end
+-- تصميم زر الإخفاء
+InvisibleButton.Parent = MainFrame
+InvisibleButton.Size = UDim2.new(0, 210, 0, 50)
+InvisibleButton.Position = UDim2.new(0.08, 0, 0.45, 0)
+InvisibleButton.BackgroundColor3 = Color3.fromRGB(35, 25, 65)
+InvisibleButton.Text = "👻 تفعيل الإخفاء التام (Ghost Mode)"
+InvisibleButton.TextColor3 = Color3.fromRGB(200, 200, 255)
+InvisibleButton.TextSize = 12
+InvisibleButton.Font = Enum.Font.GothamBold
+InvisibleButton.BorderSizePixel = 0
 
--- إعداد أزرار الصفحة الرئيسية
-styleButton(GoToSpawnPageButton, "صفحة الرسبون وحفظ المكان 📁", UDim2.new(0.08, 0, 0.28, 0), MainFrame)
-styleButton(RichServerButton, "👑 دخول سيرفر الأغنياء (Nerd/Rich)", UDim2.new(0.08, 0, 0.58, 0), MainFrame, Color3.fromRGB(110, 25, 150))
-
--- إنشاء اللوحة الثانية (صفحة الرسبون) وتكون مخفية في البداية
-SpawnPageFrame.Parent = MainFrame
-SpawnPageFrame.BackgroundColor3 = Color3.fromRGB(15, 10, 30)
-SpawnPageFrame.Size = UDim2.new(1, 0, 1, -40)
-SpawnPageFrame.Position = UDim2.new(0, 0, 0, 40)
-SpawnPageFrame.Visible = false
-SpawnPageFrame.BorderSizePixel = 0
-
-styleButton(SaveLocationButton, "📌 حفظ المكان الحالي للسرقة", UDim2.new(0.08, 0, 0.1, 0), SpawnPageFrame, Color3.fromRGB(25, 85, 45))
-styleButton(TeleportSavedButton, "⚡ رسبون (انتقال للمكان المحفوظ)", UDim2.new(0.08, 0, 0.45, 0), SpawnPageFrame, Color3.fromRGB(0, 100, 180))
-styleButton(BackToMainButton, "⬅ عودة للخلف", UDim2.new(0.08, 0, 0.78, 0), SpawnPageFrame, Color3.fromRGB(40, 40, 40))
-BackToMainButton.Size = UDim2.new(0, 210, 0, 30)
-
--- التحكم في فتح وإغلاق النوافذ
+-- التحكم في النوافذ
 CloseButton.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 MinimizeButton.MouseButton1Click:Connect(function() MainFrame.Visible = false OpenButton.Visible = true end)
 OpenButton.MouseButton1Click:Connect(function() OpenButton.Visible = false MainFrame.Visible = true end)
 
--- الانتقال بين الصفحات
-GoToSpawnPageButton.MouseButton1Click:Connect(function()
-    GoToSpawnPageButton.Visible = false
-    RichServerButton.Visible = false
-    SpawnPageFrame.Visible = true
-end)
-
-BackToMainButton.MouseButton1Click:Connect(function()
-    SpawnPageFrame.Visible = false
-    GoToSpawnPageButton.Visible = true
-    RichServerButton.Visible = true
-end)
-
 -- =======================================================
--- البرمجة والأنظمة الخلفية (حفظ المواقع ونقل السيرفرات)
+-- كود نظام الإخفاء البرمجي (Invisible System)
 -- =======================================================
 local Players = game:GetService("Players")
-local HttpService = game:GetService("HttpService")
-local TeleportService = game:GetService("TeleportService")
 local LocalPlayer = Players.LocalPlayer
+local IsInvisible = false
+local SavedParts = {}
 
-local SavedCFrame = nil
-
--- [1] نظام حفظ الموقع الحالي
-SaveLocationButton.MouseButton1Click:Connect(function()
+InvisibleButton.MouseButton1Click:Connect(function()
     local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
-        SavedCFrame = char.HumanoidRootPart.CFrame
-        SaveLocationButton.Text = "✅ تم حفظ المكان بنجاح!"
-        task.wait(1.5)
-        SaveLocationButton.Text = "📌 حفظ المكان الحالي للسرقة"
-    end
-end)
-
--- [2] نظام الرسبون/الانتقال الفوري للمكان الذي تم حفظه
-TeleportSavedButton.MouseButton1Click:Connect(function()
-    local char = LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
-        if SavedCFrame then
-            char.HumanoidRootPart.CFrame = SavedCFrame
-        else
-            TeleportSavedButton.Text = "❌ لم تقم بحفظ أي مكان أولاً!"
-            task.wait(1.5)
-            TeleportSavedButton.Text = "⚡ رسبون (انتقال للمكان المحفوظ)"
-        end
-    end
-end)
-
--- [3] نظام البحث عن سيرفر الأغنياء واللاعبين النادرين والانتقال إليه
-RichServerButton.MouseButton1Click:Connect(function()
-    RichServerButton.Text = "⏳ جاري البحث عن الأغنياء..."
+    if not char or not char:FindFirstChild("HumanoidRootPart") or not char:FindFirstChild("LowerTorso") then return end
     
-    local success, result = pcall(function()
-        -- جلب قائمة السيرفرات الحية للماب الحالي
-        local url = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
-        return HttpService:JSONDecode(game:HttpGet(url))
-    end)
+    IsInvisible = not IsInvisible
     
-    if success and result and result.data then
-        local targetServer = nil
-        -- فلترة السيرفرات لاختيار سيرفر ممتلئ وفيه لاعبين بممتلكات عالية (Max Players القريب من الحد الأقصى)
-        for _, server in ipairs(result.data) do
-            if server.playing and server.playing > 10 and server.playing < server.maxPlayers then
-                targetServer = server.id
-                break
+    if IsInvisible then
+        -- تفعيل الإخفاء
+        InvisibleButton.Text = "✅ أنت الآن مخفي عن الجميع!"
+        InvisibleButton.BackgroundColor3 = Color3.fromRGB(30, 80, 50)
+        InvisibleButton.TextColor3 = Color3.fromRGB(100, 255, 100)
+        
+        -- تدمير الجذور البصرية لكي يعتقد السيرفر أنك غير موجود بمكانك الحقيقي
+        local root = char.HumanoidRootPart
+        local clone = root:Clone()
+        clone.Parent = char
+        root:Destroy()
+        char.PrimaryPart = clone
+        
+        -- جعل كل أجزاء الجسم شفافة تماماً
+        for _, part in ipairs(char:GetDescendants()) do
+            if part:IsA("BasePart") or part:IsA("Decal") then
+                SavedParts[part] = part.Transparency
+                part.Transparency = 1
             end
         end
-        
-        if targetServer then
-            RichServerButton.Text = "🚀 تم العثور! جاري النقل..."
-            TeleportService:TeleportToPlaceInstance(game.PlaceId, targetServer, LocalPlayer)
-        else
-            RichServerButton.Text = "❌ لم نجد سيرفر مناسب، جرب مجدداً"
-            task.wait(2)
-            RichServerButton.Text = "👑 دخول سيرفر الأغنياء (Nerd/Rich)"
-        end
     else
-        RichServerButton.Text = "❌ فشل الاتصال بروبلوكس"
-        task.wait(2)
-        RichServerButton.Text = "👑 دخول سيرفر الأغنياء (Nerd/Rich)"
+        -- إلغاء الإخفاء (طلب إعادة الرسبون العادي لإرجاعك كلاعب طبيعي)
+        InvisibleButton.Text = "🔄 جاري إرجاع شكلك الطبيعي..."
+        InvisibleButton.BackgroundColor3 = Color3.fromRGB(35, 25, 65)
+        InvisibleButton.TextColor3 = Color3.fromRGB(200, 200, 255)
+        
+        LocalPlayer:LoadCharacter() -- إعادة رسبون آمن لإرجاع الشكل والملابس بالكامل
+        IsInvisible = false
     end
 end)
